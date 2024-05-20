@@ -20,20 +20,20 @@ export default defineSchema({
     }),
 
   workItems: defineTable({
-    assigneeId: v.id("users"),
-    assignee: v.string(),
-    label: TaskType,
-    priority: TaskPriority,
-    projectId: v.id("projects"),
-    status: TaskStatus,
-    title: v.string(),
-    description: v.optional(v.string()),
-  })
-    .index("by_project", ["projectId"])
-    .searchIndex("search_title", {
-      searchField: "title",
-      filterFields: ["projectId"],
-    }),
+      assigneeId: v.id("users"),      // Reference to the user who is assigned the task
+      assignee: v.string(),           // Name or identifier of the assignee
+      label: TaskType,                // Type of the task (bug, feature, task)
+      priority: TaskPriority,         // Priority of the task (low, medium, high)
+      status: TaskStatus,             // Status of the task (todo, in_progress, done)
+      title: v.string(),              // Title of the task
+      description: v.optional(v.string()), // Optional description of the task
+      projectId: v.optional(v.id("projects")), // Optional reference to a project
+    })
+      .index("by_project", ["projectId"])     // Index for querying tasks by project
+      .searchIndex("search_title", {          // Search index for querying tasks by title
+        searchField: "title",
+        filterFields: ["projectId"],
+      });
 
   users: defineTable({
     email: v.string(),

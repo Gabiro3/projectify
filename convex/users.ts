@@ -15,9 +15,13 @@ export const list = query({
     }
 
     const team = await ctx.db
-      .query("teams")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.teamId))
+      .query("users")
+      .withIndex("by_clerk", (q) => q.eq("clerkId", args.teamId))
       .first();
+    const user = await ctx.db
+    .query("users")
+    .withIndex("by_clerk", (q) => q.eq("clerkId", args.teamId))
+    .first();
 
     if (!team) {
       console.error("[USERS_GET_ERR] : Team not found");
@@ -34,3 +38,4 @@ export const list = query({
     );
   },
 });
+

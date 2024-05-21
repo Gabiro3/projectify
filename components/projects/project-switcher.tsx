@@ -48,7 +48,7 @@ const ProjectSwitcher = ({ orgId }: ProjectSwitcherProps) => {
   const handleProjectChange = (value: string) => {
     setValue(value);
     setOpen(false);
-    router.push(`/projects/${value}`);
+    router.push(`/projects/${value}/dashboard`); //Fixed project Routing
   };
 
   return (

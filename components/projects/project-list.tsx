@@ -8,7 +8,7 @@ import { useQuery } from "convex/react";
 import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import ProjectCard from "./project-card";
-
+import { toast } from "sonner";
 type ProjectListProps = {
   orgId: string;
 };
@@ -47,6 +47,7 @@ const AddProject = () => {
       status: "development",
       description: "I'm planning to do something awesome!",
     });
+    toast.success("Project Created successfully"); // Milestone: Add Toast
   };
 
   return (

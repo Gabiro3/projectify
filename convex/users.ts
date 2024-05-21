@@ -15,8 +15,8 @@ export const list = query({
     }
 
     const team = await ctx.db
-      .query("users")
-      .withIndex("by_clerk", (q) => q.eq("clerkId", args.teamId))
+      .query("teams")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.teamId))
       .first();
 
     if (!team) {

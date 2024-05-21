@@ -34,6 +34,18 @@ export default defineSchema({
       searchField: "title",
       filterFields: ["projectId"],
     }),
+  tasks: defineTable({
+    userId: v.id("users"),             // Reference to the user who owns the task
+    projectId: v.optional(v.id("projects")), // Optional reference to a project
+    status: TaskStatus,                // Status of the task (todo, in_progress, done)
+    title: v.string(),                 // Title of the task
+    description: v.optional(v.string()), // Optional description of the task
+  })
+    .index("by_project", ["projectId"])     // Index for querying tasks by project
+    .searchIndex("search_title", {          // Search index for querying tasks by title
+      searchField: "title",
+      filterFields: ["projectId"],
+    }),
 
   users: defineTable({
     email: v.string(),

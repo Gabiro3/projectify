@@ -18,10 +18,6 @@ export const list = query({
       .query("users")
       .withIndex("by_clerk", (q) => q.eq("clerkId", args.teamId))
       .first();
-    const user = await ctx.db
-    .query("users")
-    .withIndex("by_clerk", (q) => q.eq("clerkId", args.teamId))
-    .first();
 
     if (!team) {
       console.error("[USERS_GET_ERR] : Team not found");

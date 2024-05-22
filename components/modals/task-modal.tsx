@@ -34,7 +34,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 interface Auth {
-  getUserIdentity: () => { id: string } | null;
+  getUserIdentity: () => { id: string } | undefined;
 }
 
 interface Ctx {
@@ -69,7 +69,7 @@ const TaskModal = ({ ctx }: { ctx: Ctx }) => {
     defaultValues: {
       id: values?._id ?? "",
       title: values?.title ?? "",
-      userId: identity,
+      userId: identity?.id ?? "",
       status: values?.status ?? "todo",
       priority: values?.priority ?? "low",
       type: values?.label ?? "feature",

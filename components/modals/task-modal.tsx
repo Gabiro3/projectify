@@ -87,6 +87,7 @@ const TaskModal = ({ ctx }: { ctx: Ctx }) => {
       type: values.type,
       projectId: params.id as Id<"projects">,
     };
+    console.log("Submit fx called");
 
     try {
       if (values?.id) {
@@ -96,6 +97,7 @@ const TaskModal = ({ ctx }: { ctx: Ctx }) => {
           description: taskObject.description,
           status: taskObject.status,
         });
+        console.log("Item created");
         toast.success("Work item saved successfully.");
       } else {
         await createTask({

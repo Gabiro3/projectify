@@ -33,6 +33,13 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+interface Auth {
+  getUserIdentity: () => { id: string } | null;
+}
+
+interface Ctx {
+  auth: Auth;
+}
 
 const taskFormSchema = z.object({
   id: z.string().optional(),
@@ -44,7 +51,8 @@ const taskFormSchema = z.object({
   type: z.enum(["documentation", "bug", "feature"]),
 });
 
-const TaskModal = () => {
+
+const TaskModal = ({ ctx }: { ctx: Ctx }) => {
   const { isOpen, onClose, values } = useTaskModal();
   const { organization } = useOrganization();
   const params = useParams();
@@ -54,13 +62,14 @@ const TaskModal = () => {
   const { mutate: updateTask, isPending: isUpdating } = useApiMutation(
     api.task.updateTask // Make sure to use the correct API endpoint
   );
+  const identity = ctx.auth.getUserIdentity();
 
   const form = useForm<z.infer<typeof taskFormSchema>>({
     resolver: zodResolver(taskFormSchema),
     defaultValues: {
       id: values?._id ?? "",
       title: values?.title ?? "",
-      userId: values?.assigneeId ?? UNASSIGNED_USER.value,
+      userId: identity,
       status: values?.status ?? "todo",
       priority: values?.priority ?? "low",
       type: values?.label ?? "feature",

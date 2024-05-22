@@ -22,6 +22,8 @@ import type * as resources_files from "../resources/files.js";
 import type * as resources_link from "../resources/link.js";
 import type * as resources_links from "../resources/links.js";
 import type * as resources_storage from "../resources/storage.js";
+import type * as task from "../task.js";
+import type * as tasks from "../tasks.js";
 import type * as team from "../team.js";
 import type * as team_membership from "../team_membership.js";
 import type * as types from "../types.js";
@@ -47,6 +49,8 @@ declare const fullApi: ApiFromModules<{
   "resources/link": typeof resources_link;
   "resources/links": typeof resources_links;
   "resources/storage": typeof resources_storage;
+  task: typeof task;
+  tasks: typeof tasks;
   team: typeof team;
   team_membership: typeof team_membership;
   types: typeof types;

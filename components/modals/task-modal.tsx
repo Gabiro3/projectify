@@ -9,43 +9,50 @@ import {
   Form,
   FormControl,
   FormField,
-  FormLabel,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { LABELS, PRIORITIES, STATUSES, UNASSIGNED_USER } from "@/lib/constants";
 import useApiMutation from "@/lib/hooks/use-api-mutation";
 import { useTaskModal } from "@/lib/store/use-task-modal";
+import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "convex/react";
 import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 const taskFormSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(5).max(50),
   description: z.string().optional(),
-  assigneeId: z.string(),
+  userId: z.string(),
   status: z.enum(["backlog", "todo", "in progress", "done", "canceled"]),
   priority: z.enum(["low", "medium", "high"]),
   type: z.enum(["documentation", "bug", "feature"]),
 });
 
 const TaskModal = () => {
-  // Manage the task modal state.
   const { isOpen, onClose, values } = useTaskModal();
-
+  const { organization } = useOrganization();
   const params = useParams();
-
   const { mutate: createTask, isPending: isCreating } = useApiMutation(
-    api.work_item.create
+    api.task.createTask // Make sure to use the correct API endpoint
   );
-
-  const { mutate: updateWorkItem, isPending: isUpdating } = useApiMutation(
-    api.work_item.update
+  const { mutate: updateTask, isPending: isUpdating } = useApiMutation(
+    api.task.updateTask // Make sure to use the correct API endpoint
   );
 
   const form = useForm<z.infer<typeof taskFormSchema>>({
@@ -53,7 +60,7 @@ const TaskModal = () => {
     defaultValues: {
       id: values?._id ?? "",
       title: values?.title ?? "",
-      assigneeId: "dummyAssigneeId",
+      userId: values?.assigneeId ?? UNASSIGNED_USER.value,
       status: values?.status ?? "todo",
       priority: values?.priority ?? "low",
       type: values?.label ?? "feature",
@@ -61,27 +68,40 @@ const TaskModal = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof taskFormSchema>) {
+  async function onSubmit(values: z.infer<typeof taskFormSchema>) {
     const taskObject = {
       title: values.title,
       description: values.description,
-      assignee: "Dummy Assignee",
-      assigneeId: "dummyAssigneeId" as Id<"users">,
+      userId: values.userId as Id<"users">,
       status: values.status,
       priority: values.priority,
-      label: values.type,
+      type: values.type,
       projectId: params.id as Id<"projects">,
     };
 
-    if (values?.id) {
-      updateWorkItem({
-        _id: values.id as Id<"workItems">,
-        ...taskObject,
-      });
-    } else {
-      createTask(taskObject);
+    try {
+      if (values?.id) {
+        await updateTask({
+          id: values.id as Id<"tasks">,
+          title: taskObject.title,
+          description: taskObject.description,
+          status: taskObject.status,
+        });
+        toast.success("Work item saved successfully.");
+      } else {
+        await createTask({
+          userId: taskObject.userId,
+          projectId: taskObject.projectId,
+          status: taskObject.status,
+          title: taskObject.title,
+          description: taskObject.description,
+        });
+        toast.success("Work item created successfully.");
+      }
+    } catch (e) {
+      console.error("Failed to save work item", e);
+      toast.error("Failed to save work item. Please try again.");
     }
-
     onClose();
   }
 
@@ -108,61 +128,98 @@ const TaskModal = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="assigneeId"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel>Assignee</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Assignee" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-3 gap-2">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="flex">
+                          {STATUSES.map((status) => (
+                            <SelectItem key={status.value} value={status.value}>
+                              {status.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Status" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="priority"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel>Priority</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="flex">
+                          {PRIORITIES.map((priority) => (
+                            <SelectItem
+                              key={priority.value}
+                              value={priority.value}
+                            >
+                              {priority.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="priority"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel>Priority</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Priority" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel>Type</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Type" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel>Type</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger className="capitalize">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="flex">
+                          {LABELS.map((label) => (
+                            <SelectItem
+                              key={label.value}
+                              value={label.value}
+                              className="capitalize"
+                            >
+                              {label.value}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
@@ -171,7 +228,12 @@ const TaskModal = () => {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input placeholder="Description" {...field} />
+                    <Textarea
+                      rows={10}
+                      placeholder="Description of the task"
+                      className="resize-none"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -189,3 +251,4 @@ const TaskModal = () => {
 };
 
 export default TaskModal;
+

@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { TaskStatus } from "./types"; // Assume you have TaskStatus defined similar to ProjectStatus
+import { TaskStatus } from "./types";
 
 // Create a new task
 export const createTask = mutation({
@@ -51,38 +51,26 @@ export const removeTask = mutation({
     id: v.id("tasks"),
   },
   handler: async (ctx, args) => {
-    const task = await ctx.db.get(args.id);
-    if (!task) {
-      throw new Error("Task not found");
-    }
-
     await ctx.db.delete(args.id);
+    return "Task removed";
   },
 });
 
-// Update a task by ID
+// Update an existing task
 export const updateTask = mutation({
   args: {
     id: v.id("tasks"),
-    title: v.optional(v.string()),
+    title: v.string(),
     description: v.optional(v.string()),
-    status: v.optional(TaskStatus),
+    status: TaskStatus,
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Unauthorized");
-    }
-
-    const task = await ctx.db.get(args.id);
-    if (!task) {
-      throw new Error("Task not found");
-    }
-
     await ctx.db.patch(args.id, {
       title: args.title,
       description: args.description,
       status: args.status,
     });
+    return "Task updated";
   },
 });
+

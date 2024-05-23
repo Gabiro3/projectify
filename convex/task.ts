@@ -1,15 +1,15 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { TaskStatus } from "./types";
-
+import { Id } from "@/convex/_generated/dataModel";
 // Create a new task
 export const createTask = mutation({
   args: {
-    userId: v.id("users"),
     projectId: v.optional(v.id("projects")),
     status: TaskStatus,
     title: v.string(),
     description: v.optional(v.string()),
+    priority: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -19,11 +19,12 @@ export const createTask = mutation({
     }
 
     const taskId = await ctx.db.insert("tasks", {
-      userId: args.userId,
+      userId: identity.subject as Id<"users">,
       projectId: args.projectId,
       status: args.status,
       title: args.title,
       description: args.description,
+      priority: args.priority,
     });
 
     return taskId;
@@ -63,12 +64,14 @@ export const updateTask = mutation({
     title: v.string(),
     description: v.optional(v.string()),
     status: TaskStatus,
+    priority: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.id, {
       title: args.title,
       description: args.description,
       status: args.status,
+      priority:args.priority,
     });
     return "Task updated";
   },

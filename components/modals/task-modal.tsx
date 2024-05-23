@@ -38,7 +38,6 @@ const taskFormSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(5).max(50),
   description: z.string().optional(),
-  userId: z.string(),
   status: z.enum(["backlog", "todo", "in progress", "done", "canceled"]),
   priority: z.enum(["low", "medium", "high"]),
   type: z.enum(["documentation", "bug", "feature"]),
@@ -61,7 +60,6 @@ const TaskModal = () => {
     defaultValues: {
       id: values?._id ?? "",
       title: values?.title ?? "",
-      userId: values?.assigneeId ?? UNASSIGNED_USER.value,
       status: values?.status ?? "todo",
       priority: values?.priority ?? "low",
       type: values?.label ?? "feature",
@@ -70,40 +68,28 @@ const TaskModal = () => {
   });
 
   async function onSubmit(values: z.infer<typeof taskFormSchema>) {
-    const taskObject = {
-      title: values.title,
-      description: values.description,
-      userId: values.userId as Id<"users">,
-      status: values.status,
-      priority: values.priority,
-      type: values.type,
-      projectId: params.id as Id<"projects">,
-    };
-    console.log("Submit fx called");
 
-    try {
-      if (values?.id) {
-        await updateTask({
-          id: values.id as Id<"tasks">,
-          title: taskObject.title,
-          description: taskObject.description,
-          status: taskObject.status,
-        });
-        toast.success("Work item saved successfully.");
-      } else {
-        await createTask({
-          userId: taskObject.userId,
-          projectId: taskObject.projectId,
-          status: taskObject.status,
-          title: taskObject.title,
-          description: taskObject.description,
-        });
-        toast.success("Work item created successfully.");
-      }
-    } catch (e) {
-      console.error("Failed to save work item", e);
-      toast.error("Failed to save work item. Please try again.");
+    let taskId = values.id as Id<"tasks"> | undefined;
+
+    if (taskId) {
+      updateTask({
+        title: values.title,
+        description: values.description,
+        status: values.status,
+        id: taskId,
+        priority:values.priority,
+      });
+    } else {
+      taskId = await createTask({
+        projectId: params.id as Id<"projects">,
+        status: values.status,
+        title: values.title,
+        description: values.description,
+        priority: values.priority,
+      });
     }
+
+    toast.success("Task has been successfully saved.");
     onClose();
   }
 

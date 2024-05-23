@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/table";
 import { Doc } from "@/convex/_generated/dataModel";
 import { useTaskModal } from "@/lib/store/use-task-modal";
+import { Edit } from "lucide-react";
 
 type OwnedTaskTableProps = {
-  tasks: Doc<"workItems">[];
+  tasks: Doc<"tasks">[];
 };
 
 const OwnedTaskTable = ({ tasks }: OwnedTaskTableProps) => {
@@ -33,13 +34,16 @@ const OwnedTaskTable = ({ tasks }: OwnedTaskTableProps) => {
         {tasks.map((task) => (
           <TableRow key={task._id}>
             <TableCell className="truncate max-w-[300px]">
-              <TaskTitle title={task.title} type={task.label} />
+              <TaskTitle title={task.title} type="bug"/>
             </TableCell>
             <TableCell>
               <TaskStatus status={task.status} />
             </TableCell>
             <TableCell>
-              <TaskPriority priority={task.priority} />
+              <TaskPriority priority="low" />
+            </TableCell>
+            <TableCell>
+              <Edit className="w-4 h-4" />
             </TableCell>
           </TableRow>
         ))}

@@ -13,6 +13,7 @@ import {
 import { Doc } from "@/convex/_generated/dataModel";
 import { useTaskModal } from "@/lib/store/use-task-modal";
 import { Edit } from "lucide-react";
+import AddButton from "@/components/task/add-button";
 
 type OwnedTaskTableProps = {
   
@@ -30,6 +31,7 @@ const OwnedTaskTable = ({ tasks }: OwnedTaskTableProps) => {
           <TableHead className="md:min-w-64">Title</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Priority</TableHead>
+          <AddButton />
         </TableRow>
       </TableHeader>
       <TableBody>

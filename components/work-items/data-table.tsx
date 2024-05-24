@@ -28,14 +28,13 @@ import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 
 export type Task = {
-  _id: Id<"workItems">;
+  _id: Id<"tasks">;
   projectId: Id<"projects">;
-  title: string;
-  assignee: string;
-  assigneeId: Id<"users">;
-  label: TaskType;
-  priority: TaskPriority;
   status: TaskStatus;
+  title: string;
+  description: string;
+  priority: TaskPriority;
+  type: TaskType;
 };
 
 interface DataTableProps<TData, TValue> {

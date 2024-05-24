@@ -3,8 +3,8 @@ import { create } from "zustand";
 
 type TModalProvider = {
   isOpen: boolean;
-  values?: Omit<Doc<"workItems">, "_creationTime">;
-  onOpen: (values?: Omit<Doc<"workItems">, "_creationTime">) => void;
+  values?: Omit<Doc<"tasks">, "_creationTime">;
+  onOpen: (values?: Omit<Doc<"tasks">, "_creationTime">) => void;
   onClose: () => void;
 };
 

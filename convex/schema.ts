@@ -36,10 +36,10 @@ export default defineSchema({
     }),
   tasks: defineTable({
     userId: v.optional(v.string()),             // Reference to the user who owns the task
-    projectId: v.optional(v.id("projects")), // Optional reference to a project
+    projectId: v.id("projects"), // Optional reference to a project
     status: TaskStatus,                // Status of the task (todo, in_progress, done)
     title: v.string(),                 // Title of the task
-    description: v.optional(v.string()), 
+    description: v.string(), 
     priority: TaskPriority,
     type: TaskType
   })

@@ -36,6 +36,7 @@ import { toast } from "sonner";
 
 const taskFormSchema = z.object({
   id: z.string().optional(),
+  projectId: z.string().optional(),
   title: z.string().min(5).max(50),
   description: z.string().optional(),
   status: z.enum(["backlog", "todo", "in progress", "done", "canceled"]),
@@ -59,10 +60,11 @@ const TaskModal = () => {
     resolver: zodResolver(taskFormSchema),
     defaultValues: {
       id: values?._id ?? "",
+      projectId: params?.id as Id<"projects">,
       title: values?.title ?? "",
       status: values?.status ?? "todo",
       priority: values?.priority ?? "low",
-      type: values?.label ?? "feature",
+      type: values?.type ?? "feature",
       description: values?.description ?? "",
     },
   });

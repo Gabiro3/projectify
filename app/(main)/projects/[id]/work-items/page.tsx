@@ -14,7 +14,7 @@ type WorkItemsPageProps = {
 };
 
 const WorkItemsPage = ({ params: { id } }: WorkItemsPageProps) => {
-  const tasks = useQuery(api.work_items.list, { projectId: id });
+  const tasks = useQuery(api.tasks.list, { projectId: id });
 
   const { onOpen } = useTaskModal();
 

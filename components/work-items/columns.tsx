@@ -19,22 +19,11 @@ export const columns: ColumnDef<Task>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <TaskTitle title={row.getValue("title")} type={row.original.label} />
+      <TaskTitle title={row.getValue("title")} type={row.original.type} />
     ),
     enableHiding: false,
   },
-  {
-    accessorKey: "assignee",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Assignee" />
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center gap-1">
-        {row.getValue("assignee") ?? "Unassigned"}
-      </div>
-    ),
-    filterFn: (row, value) => value.includes(row.original.assigneeId),
-  },
+  
   {
     accessorKey: "status",
     header: ({ column }) => (

@@ -19,7 +19,7 @@ type DataTableRowActionsProps = {
 const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
   const { onOpen } = useTaskModal();
   const { mutate: deleteTask, isPending } = useApiMutation(
-    api.work_item.remove
+    api.task.removeTask
   );
 
   const handleEdit = () => {
@@ -27,7 +27,7 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
   };
 
   const handleDelete = () => {
-    deleteTask({ _id: row.original._id });
+    deleteTask({ id: row.original._id });
   };
 
   return (

@@ -47,7 +47,7 @@ const OwnedTaskTable = ({ tasks }: OwnedTaskTableProps) => {
               <TaskPriority priority={task.priority} />
             </TableCell>
             <TableCell>
-              <Edit className="w-4 h-4" onClick={() => onOpen()}/>
+              <Edit className="w-4 h-4" onClick={() => onOpen({ _id: task._id, title: task.title, priority: task.priority, status: task.status, type: task.type, description: "Task Desc", projectId: task.projectId })}/>
             </TableCell>
           </TableRow>
         ))}

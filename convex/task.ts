@@ -21,10 +21,10 @@ export const createTask = mutation({
 
     const taskId = await ctx.db.insert("tasks", {
       userId: identity.subject as Id<"users">,
-      projectId: args.projectId,
+      projectId: args.projectId as Id<"projects">,
       status: args.status,
       title: args.title,
-      description: args.description,
+      description: "Task Description",
       priority: args.priority,
       type: args.type,
     });

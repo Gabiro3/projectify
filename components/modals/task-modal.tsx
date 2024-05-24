@@ -78,6 +78,7 @@ const TaskModal = () => {
         status: values.status,
         id: taskId,
         priority:values.priority,
+        type: values.type,
       });
     } else {
       taskId = await createTask({
@@ -86,6 +87,7 @@ const TaskModal = () => {
         title: values.title,
         description: values.description,
         priority: values.priority,
+        type: values.type
       });
     }
 

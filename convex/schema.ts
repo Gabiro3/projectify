@@ -40,8 +40,8 @@ export default defineSchema({
     status: TaskStatus,                // Status of the task (todo, in_progress, done)
     title: v.string(),                 // Title of the task
     description: v.optional(v.string()), 
-    priority: v.optional(v.string()),
-    type: v.optional(v.string())// Optional description of the task
+    priority: TaskPriority,
+    type: TaskType
   })
     .index("by_project", ["projectId"])     // Index for querying tasks by project
     .searchIndex("search_title", {          // Search index for querying tasks by title

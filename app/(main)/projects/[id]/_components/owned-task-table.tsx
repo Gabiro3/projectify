@@ -15,10 +15,12 @@ import { useTaskModal } from "@/lib/store/use-task-modal";
 import { Edit } from "lucide-react";
 
 type OwnedTaskTableProps = {
+  
   tasks: Doc<"tasks">[];
 };
 
 const OwnedTaskTable = ({ tasks }: OwnedTaskTableProps) => {
+   const { onOpen } = useTaskModal();
   if (tasks.length === 0) return <NoTask />;
 
   return (
@@ -34,16 +36,16 @@ const OwnedTaskTable = ({ tasks }: OwnedTaskTableProps) => {
         {tasks.map((task) => (
           <TableRow key={task._id}>
             <TableCell className="truncate max-w-[300px]">
-              <TaskTitle title={task.title} type="bug"/>
+              <TaskTitle title={task.title} type={task.type}/>
             </TableCell>
             <TableCell>
               <TaskStatus status={task.status} />
             </TableCell>
             <TableCell>
-              <TaskPriority priority="low" />
+              <TaskPriority priority={task.priority} />
             </TableCell>
             <TableCell>
-              <Edit className="w-4 h-4" />
+              <Edit className="w-4 h-4" onClick={() => onOpen()}/>
             </TableCell>
           </TableRow>
         ))}

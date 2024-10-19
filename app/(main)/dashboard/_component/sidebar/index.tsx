@@ -1,13 +1,13 @@
 "use client";
 
 import { OrganizationSwitcher } from "@clerk/nextjs";
-import { Notebook, Settings, Users } from "lucide-react";
+import { Notebook, Settings, BadgeAlert } from "lucide-react";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { DASHBOARD_ROUTE } from "@/lib/constants";
+import { DASHBOARD_ROUTE, TERMS_ROUTE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -74,11 +74,10 @@ const DashboardSidebar = () => {
         >
           <Link
             href={{
-              pathname: DASHBOARD_ROUTE,
-              query: { settings: true },
+              pathname: TERMS_ROUTE,
             }}
           >
-            <Settings className="w-4 h-4 mr-2" /> Settings
+            <BadgeAlert className="w-4 h-4 mr-2" /> Terms & Conditions
           </Link>
         </Button>
       </div>

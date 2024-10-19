@@ -13,6 +13,7 @@ import {
 import { TaskPriority, TaskStatus, TaskType } from "./types";
 
 export const DASHBOARD_ROUTE = "/dashboard";
+export const TERMS_ROUTE = "/terms";
 
 export const UNASSIGNED_USER = {
   label: "Unassigned",

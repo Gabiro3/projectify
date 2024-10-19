@@ -1,7 +1,7 @@
 "use client";
 
 import { OrganizationSwitcher } from "@clerk/nextjs";
-import { Notebook, Settings, BadgeAlert } from "lucide-react";
+import { Notebook, Settings } from "lucide-react";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -77,7 +77,7 @@ const DashboardSidebar = () => {
               pathname: TERMS_ROUTE,
             }}
           >
-            <BadgeAlert className="w-4 h-4 mr-2" /> Terms & Conditions
+            <Settings className="w-4 h-4 mr-2" /> Terms & Conditions
           </Link>
         </Button>
       </div>

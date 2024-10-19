@@ -77,7 +77,7 @@ const DashboardSidebar = () => {
               pathname: TERMS_ROUTE,
             }}
           >
-            <Settings className="w-4 h-4 mr-2" /> Terms & Conditions
+            <Settings className="w-4 h-4 mr-2" /> Terms
           </Link>
         </Button>
       </div>
